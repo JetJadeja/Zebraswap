@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/gregrossc/Zebraswap/issues"
   },
-  "homepage": "https://github.com/gregrossc/Zebraswap#readme"
+  "homepage": "https://github.com/gregrossc/Zebraswap#readme",
+  "dependencies": {
+    "@openzeppelin/contracts": "^3.2.0"
+  }
 }
