@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
-import {Box, Text, Input, Grid, Button} from '@chakra-ui/react';
+import React, { useState } from "react";
+import { Box, Text, Input, Grid, Button } from "@chakra-ui/react";
 
 /**
  * Remember to remove this once multiple tokens are added
  */
-import tokenLogo from '../../static/token-logo.png';
-import ethLogo from '../../static/eth-logo.png';
+import tokenLogo from "../../static/token-logo.png";
+import ethLogo from "../../static/eth-logo.png";
 
 const SwapForm = React.memo(({ walletConnected }) => {
     const [amounts, setAmounts] = useState({
         sellToken: 0,
         buyToken: 0,
-    })
+    });
 
     return (
         <Box
@@ -31,15 +31,14 @@ const SwapForm = React.memo(({ walletConnected }) => {
                 justifyContent="space-between"
                 alignItems="center"
             >
-                <Box 
+                <Box
                     display="flex"
                     direction="column"
                     paddingLeft={5}
-                    borderWidth="1px" 
-                    width="300px" 
+                    borderWidth="1px"
+                    width="300px"
                     height="75px"
                     borderRadius={75}
-
                 >
                     <Input
                         variant="unstyled"
@@ -48,12 +47,10 @@ const SwapForm = React.memo(({ walletConnected }) => {
                         color="white"
                         placeholder={0.1}
                         onChange={(event) => {
-                            setAmounts(
-                                {
-                                    sellToken: parseFloat(event.target.value),
-                                    buyToken: parseFloat(event.target.value) * 10
-                                }
-                            )
+                            setAmounts({
+                                sellToken: parseFloat(event.target.value),
+                                buyToken: parseFloat(event.target.value) * 10,
+                            });
                         }}
                     />
                 </Box>
@@ -61,8 +58,8 @@ const SwapForm = React.memo(({ walletConnected }) => {
                     display="flex"
                     direction="column"
                     paddingLeft={5}
-                    borderWidth="1px" 
-                    width="300px" 
+                    borderWidth="1px"
+                    width="300px"
                     height="75px"
                     borderRadius={75}
                     color="white"
@@ -71,7 +68,11 @@ const SwapForm = React.memo(({ walletConnected }) => {
                         size="lg"
                         variant="unstyled"
                         fontSize="xl"
-                        placeholder={amounts.buyToken==Number.NaN? 0.0 : amounts.buyToken}
+                        placeholder={
+                            amounts.buyToken == Number.NaN
+                                ? 0.0
+                                : amounts.buyToken
+                        }
                         readOnly={true}
                     />
                 </Box>
@@ -84,11 +85,11 @@ const SwapForm = React.memo(({ walletConnected }) => {
                     fontSize="lg"
                     disabled={!walletConnected}
                 >
-                    {walletConnected? "Swap!" : "Connect Wallet"}
+                    {walletConnected ? "Swap!" : "Connect Wallet"}
                 </Button>
             </Grid>
         </Box>
-    )
+    );
 });
 
 export default SwapForm;

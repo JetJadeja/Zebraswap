@@ -1,10 +1,18 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-
-import { ChakraProvider } from "@chakra-ui/react"
+import React from "react";
+import ReactDOM from "react-dom";
+import SwapForm from "./components/shared/SwapForm";
+import { Box, ChakraProvider } from "@chakra-ui/react";
 
 ReactDOM.render(
     <ChakraProvider>
-    </ChakraProvider>
-    , document.getElementById('root')
-)
+        <Box
+            display="flex"
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+        >
+            <SwapForm walletConnected={false} />
+        </Box>
+    </ChakraProvider>,
+    document.getElementById("root")
+);
