@@ -10,9 +10,7 @@ ReactDOM.render(
       direction="column"
       alignItems="center"
       justifyContent="center"
-    >
-      <SwapForm walletConnected={true} />
-    </Box>
+    />
   </ChakraProvider>,
   document.getElementById("root")
 );
