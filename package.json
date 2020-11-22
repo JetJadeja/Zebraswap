@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/gregrossc/Zebraswap#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^3.2.0"
+    "@openzeppelin/contracts": "^3.2.0",
+    "prettier-plugin-solidity": "^1.0.0-beta.1"
   }
 }
