@@ -29,9 +29,13 @@ contract ZebraLiquidityPool {
     ///@dev tokenReserve0 * tokenReserve1 . This is modified everytime liquidity is modified
     uint256 public lastTotalK;
 
-    ///@dev Set the ZebraUnit to the address that deployed this contract, and define the tokens
-    constructor(address _token0, address _token1) public {
+    ///@dev Set the ZebraUnit to the address that deployed this contract
+    constructor() public {
         unit = msg.sender;
+    }
+
+    ///@dev Set the pair of tokens supported by this pool
+    function initialize(address _token0, address _token1) public {
         token0 = _token0;
         token1 = _token1;
     }
@@ -44,7 +48,6 @@ contract ZebraLiquidityPool {
     function _updateTokenReserves(uint256 balance0, uint256 balance1) private {
         require(balance0 <= uint256(-1) && balance1 <= uint256(-1), "Overflow");
         uint32 lastTimestamp = uint32(block.timestamp % 2**32);
-        uint32 timeElapsed = lastTimestamp - lastUpdateTimestamp;
 
         tokenReserve0 = balance0;
         tokenReserve1 = balance1;
