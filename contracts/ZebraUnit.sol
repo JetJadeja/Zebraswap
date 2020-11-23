@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
+import "./ZebraLiquidityPool.sol";
+
 /**
     @title Zebra Unit
     @notice This is the main contract behind ZebraSwap. Similar to UniswapV2Factory, ZebraUnit creates new Liquidity Pools
@@ -31,10 +33,23 @@ contract ZebraUnit is Ownable, ReentrancyGuard {
     */
     function newPool(address token0, address token1)
         external
-        returns (address)
+        returns (address pool)
     {
         require(token0 != token1, "Identical Tokens");
         require(token0 != address(0) && token1 != address(0), "Zero Address");
         require(pools[token0][token1] == address(0), "Existing Pool");
+
+        bytes memory bytecode = type(ZebraLiquidityPool).creationCode;
+        bytes32 salt = keccak256(abi.encodePacked(token0, token1));
+
+        assembly {
+            pool := create2(0, add(bytecode, 32), mload(bytecode), salt)
+        }
+        ZebraLiquidityPool(pool).initialize(token0, token1);
+
+        pools[token0][token1] = pool;
+        pools[token1][token0] = pool;
+
+        poolAddresses.push(pool);
     }
 }
