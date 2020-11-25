@@ -38,11 +38,8 @@ class SellForm extends Component {
             className="form-control form-control-lg"
             placeholder="0"
             required />
-          <div className="input-group-append">
-            <div className="input-group-text">
-              <img src={tokenLogo} height='32' alt="" />
-              &nbsp; ZBRA
-            </div>
+           <div className="input-group-append">
+            <button type="button" class="btn btn-dark rounded-pill"><img src={tokenLogo} height='24' alt="" />&nbsp;&nbsp; <b>ZBRA ▾</b></button>
           </div>
         </div>
         <div>
@@ -60,10 +57,7 @@ class SellForm extends Component {
             disabled
           />
           <div className="input-group-append">
-            <div className="input-group-text">
-              <img src={ethLogo} height='32' alt="" />
-              &nbsp;&nbsp;&nbsp; ETH
-            </div>
+            <button type="button" class="btn btn-dark rounded-pill"><img src={ethLogo} height='24' alt="" />&nbsp;&nbsp;&nbsp; <b>ETH ▾</b></button>
           </div>
         </div>
         <div className="mb-5">

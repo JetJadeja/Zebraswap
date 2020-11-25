@@ -39,13 +39,10 @@ class BuyForm extends Component {
             placeholder="0"
             required />
           <div className="input-group-append">
-            <div className="input-group-text">
-              <img src={ethLogo} height='32' alt="" />
-              &nbsp;&nbsp;&nbsp; ETH
-            </div>
+            <button type="button" class="btn btn-dark rounded-pill"><img src={ethLogo} height='24' alt="" />&nbsp;&nbsp;&nbsp;<b>ETH ▾</b></button>
           </div>
-        </div>
-        <div>
+          </div>
+		<div>
           <label className="float-left"><b>Output</b></label>
           <span className="float-right text-muted">
             Balance: {window.web3.utils.fromWei(this.props.tokenBalance, 'Ether')}
@@ -60,10 +57,7 @@ class BuyForm extends Component {
             disabled
           />
           <div className="input-group-append">
-            <div className="input-group-text">
-              <img src={tokenLogo} height='32' alt="" />
-              &nbsp; ZBRA
-            </div>
+            <button type="button" class="btn btn-dark rounded-pill"><img src={tokenLogo} height='24' alt="" />&nbsp;&nbsp; <b>ZBRA ▾</b></button>
           </div>
         </div>
         <div className="mb-5">
