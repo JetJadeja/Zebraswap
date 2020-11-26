@@ -25,65 +25,72 @@ const SecondDisclosure = () => {
   return [isOpen, onOpen, onClose];
 };
 
-const BuyInput = React.memo(({ amounts, setAmounts, onTokenClick, token }) => {
-  return (
-    <Box
-      display="flex"
-      direction="column"
-      padding={5}
-      borderWidth="1px"
-      width="300px"
-      height="75px"
-      borderRadius={75}
-    >
-      <Input
-        variant="unstyled"
-        size="lg"
-        fontSize="xl"
-        color="white"
-        placeholder={0}
-        onChange={(event) => {
-          if (isNaN(parseFloat(event.target.value) * 10)) {
-            setAmounts({
-              sellToken: 0,
-              buyToken: 0,
-            });
-          } else {
-            setAmounts({
-              sellToken: parseFloat(event.target.value),
-              buyToken: parseFloat(event.target.value) * 10,
-            });
-          }
-        }}
-      />
+const BuyInput = React.memo(
+  ({ amounts, setAmounts, onTokenClick, token, clear, setClear }) => {
+    return (
       <Box
         display="flex"
         direction="column"
-        alignItems="center"
-        justifyContent="flex-end"
+        padding={5}
+        borderWidth="1px"
+        width="300px"
+        height="75px"
+        borderRadius={75}
       >
-        <Button
-          bgColor="transparent"
-          borderRadius={100}
-          padding={5}
-          onClick={onTokenClick}
+        <Input
+          variant="unstyled"
+          size="lg"
+          fontSize="xl"
+          color="white"
+          placeholder={0}
+          onChange={(event) => {
+            setClear(false);
+            if (!clear) {
+              if (isNaN(parseFloat(event.target.value))) {
+                setAmounts({
+                  sellToken: 0,
+                  buyToken: 0,
+                });
+              } else {
+                setAmounts({
+                  sellToken: parseFloat(event.target.value),
+                  buyToken: parseFloat(event.target.value) * 10,
+                });
+              }
+            } else {
+              event.target.value = "";
+            }
+          }}
+        />
+        <Box
+          display="flex"
+          direction="column"
+          alignItems="center"
+          justifyContent="flex-end"
         >
-          <Image
-            src={token.logoURI}
-            w="30px"
-            h="30px"
-            fallbackSrc={token.fallbackURI}
-          />
-          <Box padding={3}>
-            <Text fontWeight="bold" color="white" size="sm">
-              {token.symbol}
-            </Text>
-          </Box>
-        </Button>
+          <Button
+            bgColor="transparent"
+            borderRadius={100}
+            padding={5}
+            onClick={onTokenClick}
+          >
+            <Image
+              src={token.logoURI}
+              w="30px"
+              h="30px"
+              fallbackSrc={token.fallbackURI}
+            />
+            <Box padding={3}>
+              <Text fontWeight="bold" color="white" size="sm">
+                {token.symbol}
+              </Text>
+            </Box>
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  );
-});
+    );
+  }
+);
 
 const SellForm = React.memo(({ amounts, setAmounts, token, onTokenClick }) => {
   return (
@@ -153,11 +160,17 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
     address: "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
   });
 
+  const [clearInput, setClearInput] = useState();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [sellIsOpen, sellOnOpen, sellOnClose] = SecondDisclosure();
 
   const swap = () => {
-    setAmounts({ sellToken: amounts.buyToken, buyToken: amounts.sellToken });
+    setAmounts({ sellToken: 0, buyToken: 0 });
+    const [_sellToken, _buyToken] = [buyToken, sellToken];
+    setBuyToken(_buyToken);
+    setSellToken(_sellToken);
+    setClearInput(true);
   };
 
   return (
@@ -186,6 +199,8 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
             balance={2}
             onTokenClick={onOpen}
             token={buyToken}
+            clear={clearInput}
+            setClear={setClearInput}
           />
 
           <IconButton
