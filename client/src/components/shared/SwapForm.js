@@ -8,6 +8,7 @@ import {
   Image,
   Grid,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 
 import { UpDownIcon } from "@chakra-ui/icons";
@@ -17,59 +18,67 @@ import { UpDownIcon } from "@chakra-ui/icons";
  */
 import tokenLogo from "../../static/token-logo.png";
 import ethLogo from "../../static/eth-logo.png";
+import SelectToken from "./SelectToken";
 
-const BuyInput = React.memo(({ amounts, setAmounts, userBalance }) => {
-  return (
-    <Box
-      display="flex"
-      direction="column"
-      padding={5}
-      borderWidth="1px"
-      width="300px"
-      height="75px"
-      borderRadius={75}
-    >
-      <Input
-        variant="unstyled"
-        size="lg"
-        fontSize="xl"
-        color="white"
-        placeholder={0}
-        onChange={(event) => {
-          if (isNaN(parseFloat(event.target.value) * 10)) {
-            setAmounts({
-              sellToken: 0,
-              buyToken: 0,
-            });
-          } else {
-            setAmounts({
-              sellToken: parseFloat(event.target.value),
-              buyToken: parseFloat(event.target.value) * 10,
-            });
-          }
-        }}
-      />
+const BuyInput = React.memo(
+  ({ amounts, setAmounts, userBalance, onTokenClick }) => {
+    return (
       <Box
         display="flex"
         direction="column"
-        alignItems="center"
-        justifyContent="flex-end"
+        padding={5}
+        borderWidth="1px"
+        width="300px"
+        height="75px"
+        borderRadius={75}
       >
-        <Box>
-          <Text color="white">{userBalance}</Text>
-        </Box>
-        <Button bgColor="transparent" borderRadius={100} padding={5}>
-          <Image src={ethLogo} w="30px" h="30px" />
-          <Box padding={3}>
-            <Text fontWeight="bold" color="white" size="sm">
-              ETH
-            </Text>
+        <Input
+          variant="unstyled"
+          size="lg"
+          fontSize="xl"
+          color="white"
+          placeholder={0}
+          onChange={(event) => {
+            if (isNaN(parseFloat(event.target.value) * 10)) {
+              setAmounts({
+                sellToken: 0,
+                buyToken: 0,
+              });
+            } else {
+              setAmounts({
+                sellToken: parseFloat(event.target.value),
+                buyToken: parseFloat(event.target.value) * 10,
+              });
+            }
+          }}
+        />
+        <Box
+          display="flex"
+          direction="column"
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          <Box>
+            <Text color="white">{userBalance}</Text>
           </Box>
-        </Button>
+          <Button
+            bgColor="transparent"
+            borderRadius={100}
+            padding={5}
+            onClick={onTokenClick}
+          >
+            <Image src={ethLogo} w="30px" h="30px" />
+            <Box padding={3}>
+              <Text fontWeight="bold" color="white" size="sm">
+                ETH
+              </Text>
+            </Box>
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  );
-});
+    );
+  }
+);
 
 const SellForm = React.memo(({ amounts, setAmounts, userBalance }) => {
   return (
@@ -115,54 +124,66 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
     buyToken: 0,
   });
 
+  const [buyTokenData, setBuyTokenData] = React.useState();
+  const [sellTokenData, setSellTokenData] = React.useState();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const swap = () => {
     setAmounts({ sellToken: amounts.buyToken, buyToken: amounts.sellToken });
   };
 
   return (
-    <Box
-      bg="blackAlpha.900"
-      height="420px"
-      width="375px"
-      display="flex"
-      direction="column"
-      alignItems="center"
-      justifyContent="space-around"
-      borderRadius={50}
-    >
-      <Grid
-        templateColumns="repeat(1, 1fr)"
-        gap={10}
+    <>
+      <Box
+        bg="blackAlpha.900"
+        height="420px"
+        width="375px"
         display="flex"
-        flexDirection="column"
-        justifyContent="space-between"
+        direction="column"
         alignItems="center"
+        justifyContent="space-around"
+        borderRadius={50}
       >
-        <BuyInput setAmounts={setAmounts} amounts={setAmounts} balance={2} />
-
-        <IconButton
-          aria-label="icon"
-          colorScheme="transparent"
-          _highlighted={false}
-          outlineColor="transparent"
-          boxShadow="none"
-          icon={<UpDownIcon color="white.500" />}
-          onClick={swap}
-        />
-        <SellForm amounts={amounts} setAmounts={setAmounts} />
-        <Button
-          width="300px"
-          height="60px"
-          borderRadius={50}
-          bgImage="url(https://i.imgur.com/um4z5xe.png)"
-          textColor="white"
-          fontSize="lg"
-          disabled={!walletConnected}
+        <Grid
+          templateColumns="repeat(1, 1fr)"
+          gap={10}
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-between"
+          alignItems="center"
         >
-          {walletConnected ? "Swap!" : "Connect Wallet"}
-        </Button>
-      </Grid>
-    </Box>
+          <BuyInput
+            setAmounts={setAmounts}
+            amounts={setAmounts}
+            balance={2}
+            onTokenClick={onOpen}
+          />
+
+          <IconButton
+            aria-label="icon"
+            colorScheme="transparent"
+            _highlighted={false}
+            outlineColor="transparent"
+            boxShadow="none"
+            icon={<UpDownIcon color="white.500" />}
+            onClick={swap}
+          />
+          <SellForm amounts={amounts} setAmounts={setAmounts} />
+          <Button
+            width="300px"
+            height="60px"
+            borderRadius={50}
+            bgImage="url(https://i.imgur.com/um4z5xe.png)"
+            textColor="white"
+            fontSize="lg"
+            disabled={!walletConnected}
+          >
+            {walletConnected ? "Swap!" : "Connect Wallet"}
+          </Button>
+        </Grid>
+      </Box>
+      <SelectToken isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+    </>
   );
 });
 
