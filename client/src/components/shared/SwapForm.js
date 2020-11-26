@@ -20,67 +20,72 @@ import tokenLogo from "../../static/token-logo.png";
 import ethLogo from "../../static/eth-logo.png";
 import SelectToken from "./SelectToken";
 
-const BuyInput = React.memo(
-  ({ amounts, setAmounts, userBalance, onTokenClick }) => {
-    return (
+const SecondDisclosure = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  return [isOpen, onOpen, onClose];
+};
+
+const BuyInput = React.memo(({ amounts, setAmounts, onTokenClick, token }) => {
+  return (
+    <Box
+      display="flex"
+      direction="column"
+      padding={5}
+      borderWidth="1px"
+      width="300px"
+      height="75px"
+      borderRadius={75}
+    >
+      <Input
+        variant="unstyled"
+        size="lg"
+        fontSize="xl"
+        color="white"
+        placeholder={0}
+        onChange={(event) => {
+          if (isNaN(parseFloat(event.target.value) * 10)) {
+            setAmounts({
+              sellToken: 0,
+              buyToken: 0,
+            });
+          } else {
+            setAmounts({
+              sellToken: parseFloat(event.target.value),
+              buyToken: parseFloat(event.target.value) * 10,
+            });
+          }
+        }}
+      />
       <Box
         display="flex"
         direction="column"
-        padding={5}
-        borderWidth="1px"
-        width="300px"
-        height="75px"
-        borderRadius={75}
+        alignItems="center"
+        justifyContent="flex-end"
       >
-        <Input
-          variant="unstyled"
-          size="lg"
-          fontSize="xl"
-          color="white"
-          placeholder={0}
-          onChange={(event) => {
-            if (isNaN(parseFloat(event.target.value) * 10)) {
-              setAmounts({
-                sellToken: 0,
-                buyToken: 0,
-              });
-            } else {
-              setAmounts({
-                sellToken: parseFloat(event.target.value),
-                buyToken: parseFloat(event.target.value) * 10,
-              });
-            }
-          }}
-        />
-        <Box
-          display="flex"
-          direction="column"
-          alignItems="center"
-          justifyContent="flex-end"
+        <Button
+          bgColor="transparent"
+          borderRadius={100}
+          padding={5}
+          onClick={onTokenClick}
         >
-          <Box>
-            <Text color="white">{userBalance}</Text>
+          <Image
+            src={token.logoURI}
+            w="30px"
+            h="30px"
+            fallbackSrc={token.fallbackURI}
+          />
+          <Box padding={3}>
+            <Text fontWeight="bold" color="white" size="sm">
+              {token.symbol}
+            </Text>
           </Box>
-          <Button
-            bgColor="transparent"
-            borderRadius={100}
-            padding={5}
-            onClick={onTokenClick}
-          >
-            <Image src={ethLogo} w="30px" h="30px" />
-            <Box padding={3}>
-              <Text fontWeight="bold" color="white" size="sm">
-                ETH
-              </Text>
-            </Box>
-          </Button>
-        </Box>
+        </Button>
       </Box>
-    );
-  }
-);
+    </Box>
+  );
+});
 
-const SellForm = React.memo(({ amounts, setAmounts, userBalance }) => {
+const SellForm = React.memo(({ amounts, setAmounts, token, onTokenClick }) => {
   return (
     <Box
       display="flex"
@@ -105,11 +110,21 @@ const SellForm = React.memo(({ amounts, setAmounts, userBalance }) => {
         alignItems="center"
         justifyContent="flex-end"
       >
-        <Button bgColor="transparent" borderRadius={100} padding={5}>
-          <Image src={tokenLogo} w="30px" h="30px" />
+        <Button
+          bgColor="transparent"
+          borderRadius={100}
+          padding={5}
+          onClick={onTokenClick}
+        >
+          <Image
+            src={token.logoURI}
+            w="30px"
+            h="30px"
+            fallbackSrc={token.fallbackURI}
+          />
           <Box padding={3}>
             <Text fontWeight="bold" color="white" size="sm">
-              TKN
+              {token.symbol}
             </Text>
           </Box>
         </Button>
@@ -124,9 +139,22 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
     buyToken: 0,
   });
 
-  const [buyTokenData, setBuyTokenData] = React.useState();
-  const [sellTokenData, setSellTokenData] = React.useState();
+  const [buyToken, setBuyToken] = React.useState({
+    symbol: "DAI",
+    logoURI:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+    address: "0xfC1E690f61EFd961294b3e1Ce3313fBD8aa4f85d",
+  });
+
+  const [sellToken, setSellToken] = React.useState({
+    symbol: "YFI",
+    logoURI:
+      "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e/logo.png",
+    address: "0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e",
+  });
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [sellIsOpen, sellOnOpen, sellOnClose] = SecondDisclosure();
 
   const swap = () => {
     setAmounts({ sellToken: amounts.buyToken, buyToken: amounts.sellToken });
@@ -157,6 +185,7 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
             amounts={setAmounts}
             balance={2}
             onTokenClick={onOpen}
+            token={buyToken}
           />
 
           <IconButton
@@ -168,7 +197,12 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
             icon={<UpDownIcon color="white.500" />}
             onClick={swap}
           />
-          <SellForm amounts={amounts} setAmounts={setAmounts} />
+          <SellForm
+            amounts={amounts}
+            setAmounts={setAmounts}
+            token={sellToken}
+            onTokenClick={sellOnOpen}
+          />
           <Button
             width="300px"
             height="60px"
@@ -182,7 +216,17 @@ const SwapForm = React.memo(({ walletConnected, balance }) => {
           </Button>
         </Grid>
       </Box>
-      <SelectToken isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+      <SelectToken
+        isOpen={isOpen}
+        onOpen={onOpen}
+        onClose={onClose}
+        setToken={setBuyToken}
+      />
+      <SelectToken
+        isOpen={sellIsOpen}
+        onClose={sellOnClose}
+        setToken={setSellToken}
+      />
     </>
   );
 });

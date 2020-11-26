@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import lists from "../../static/tokenLists";
 
-const SelectToken = React.memo(({ isOpen, onClose }) => {
+const SelectToken = React.memo(({ isOpen, onClose, setToken }) => {
   const [list, setList] = React.useState(0);
   const [tokens, setTokens] = React.useState([]);
   React.useEffect(() => {
@@ -70,6 +70,14 @@ const SelectToken = React.memo(({ isOpen, onClose }) => {
                         bgColor="transparent"
                         width="300px"
                         justifyContent="flex-start"
+                        onClick={() =>
+                          setToken({
+                            symbol: token.symbol,
+                            address: token.address,
+                            logoURI: token.logoURI,
+                            fallbackURI: `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${token.address}/logo.png`,
+                          })
+                        }
                       >
                         <Image
                           src={`https://cloudflare-ipfs.com/ipfs/${
